@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Garza
+    given-names: Kristian
+    email: kj.garza@gmail.com
+    orcid: https://orcid.org/0000-0003-3484-6875
+    affiliation: 
+title: "Hawfinch: Streamlining Multiple Tool Steps with Vercel AI SDK in Next.js"
+version: 1.0.0
+doi: https://doi.org/
+license: CC-BY-NC-ND-4.0
+url: https://github.com/kjgarza/hawfinch
+date-released: 13-09-2025
+keywords: 
+  - dataset search
+  - AI SDK
+  - Next.js
+  - Vercel
+
