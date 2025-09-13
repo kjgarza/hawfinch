@@ -197,3 +197,175 @@ export const InvoiceIcon = ({ size = 16 }: { size: number }) => {
     </svg>
   );
 };
+
+export const DatabaseIcon = ({ size = 16, className }: { size?: number; className?: string }) => {
+  return (
+    <svg
+      height={size}
+      width={size}
+      viewBox="0 0 16 16"
+      fill="none"
+      className={className}
+      style={{ color: "currentColor" }}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M8 2C11.866 2 15 3.34315 15 5V11C15 12.6569 11.866 14 8 14C4.13401 14 1 12.6569 1 11V5C1 3.34315 4.13401 2 8 2ZM8 3.5C5.23858 3.5 2.5 4.39543 2.5 5C2.5 5.60457 5.23858 6.5 8 6.5C10.7614 6.5 13.5 5.60457 13.5 5C13.5 4.39543 10.7614 3.5 8 3.5ZM13.5 6.5C13.5 7.10457 10.7614 8 8 8C5.23858 8 2.5 7.10457 2.5 6.5V8.5C2.5 9.10457 5.23858 10 8 10C10.7614 10 13.5 9.10457 13.5 8.5V6.5ZM13.5 10C13.5 10.6046 10.7614 11.5 8 11.5C5.23858 11.5 2.5 10.6046 2.5 10V11C2.5 11.6046 5.23858 12.5 8 12.5C10.7614 12.5 13.5 11.6046 13.5 11V10Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
+
+export const CalendarIcon = ({ size = 16, className }: { size?: number; className?: string }) => {
+  return (
+    <svg
+      height={size}
+      width={size}
+      viewBox="0 0 16 16"
+      fill="none"
+      className={className}
+      style={{ color: "currentColor" }}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M4 1.5V0H5.5V1.5H10.5V0H12V1.5H13.5C14.3284 1.5 15 2.17157 15 3V13.5C15 14.3284 14.3284 15 13.5 15H2.5C1.67157 15 1 14.3284 1 13.5V3C1 2.17157 1.67157 1.5 2.5 1.5H4ZM2.5 5.5V13.5H13.5V5.5H2.5ZM2.5 3V4H13.5V3H12V4.5H10.5V3H5.5V4.5H4V3H2.5Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
+
+export const LicenseIcon = ({ size = 16, className }: { size?: number; className?: string }) => {
+  return (
+    <svg
+      height={size}
+      width={size}
+      viewBox="0 0 16 16"
+      fill="none"
+      className={className}
+      style={{ color: "currentColor" }}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M3 2C2.44772 2 2 2.44772 2 3V13C2 13.5523 2.44772 14 3 14H13C13.5523 14 14 13.5523 14 13V3C14 2.44772 13.5523 2 13 2H3ZM0.5 3C0.5 1.61929 1.61929 0.5 3 0.5H13C14.3807 0.5 15.5 1.61929 15.5 3V13C15.5 14.3807 14.3807 15.5 13 15.5H3C1.61929 15.5 0.5 14.3807 0.5 13V3ZM4.5 5.5H11.5V4H4.5V5.5ZM11.5 7.5H4.5V9H11.5V7.5ZM4.5 11.5H9V10H4.5V11.5Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
+
+export const CheckCircleIcon = ({ size = 16, className }: { size?: number; className?: string }) => {
+  return (
+    <svg
+      height={size}
+      width={size}
+      viewBox="0 0 16 16"
+      fill="none"
+      className={className}
+      style={{ color: "currentColor" }}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm3.78-9.72a.75.75 0 0 0-1.06-1.06L6.75 9.19 5.28 7.72a.75.75 0 0 0-1.06 1.06l2 2a.75.75 0 0 0 1.06 0l4.5-4.5z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
+
+export const XCircleIcon = ({ size = 16, className }: { size?: number; className?: string }) => {
+  return (
+    <svg
+      height={size}
+      width={size}
+      viewBox="0 0 16 16"
+      fill="none"
+      className={className}
+      style={{ color: "currentColor" }}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zM5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
+
+export const ClockIcon = ({ size = 16, className }: { size?: number; className?: string }) => {
+  return (
+    <svg
+      height={size}
+      width={size}
+      viewBox="0 0 16 16"
+      fill="none"
+      className={className}
+      style={{ color: "currentColor" }}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"
+        fill="currentColor"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-.75.75H5.75a.75.75 0 0 1 0-1.5H7.25V4.75A.75.75 0 0 1 8 4z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
+
+export const SearchIcon = ({ size = 16, className }: { size?: number; className?: string }) => {
+  return (
+    <svg
+      height={size}
+      width={size}
+      viewBox="0 0 16 16"
+      fill="none"
+      className={className}
+      style={{ color: "currentColor" }}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M7 1.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11zM0 7a7 7 0 1 1 12.606 4.192l3.101 3.101a.75.75 0 1 1-1.06 1.06L11.546 12.252A7 7 0 0 1 0 7z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
+
+export const DownloadIcon = ({ size = 16, className }: { size?: number; className?: string }) => {
+  return (
+    <svg
+      height={size}
+      width={size}
+      viewBox="0 0 16 16"
+      fill="none"
+      className={className}
+      style={{ color: "currentColor" }}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M8 1.75a.75.75 0 0 1 .75.75v6.69l2.72-2.72a.75.75 0 1 1 1.06 1.06l-4 4a.75.75 0 0 1-1.06 0l-4-4a.75.75 0 1 1 1.06-1.06l2.72 2.72V2.5A.75.75 0 0 1 8 1.75z"
+        fill="currentColor"
+      />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M2.25 12.5a.75.75 0 0 1 .75.75v1a.25.25 0 0 0 .25.25h9.5a.25.25 0 0 0 .25-.25v-1a.75.75 0 0 1 1.5 0v1A1.75 1.75 0 0 1 12.75 16h-9.5A1.75 1.75 0 0 1 1.5 14.25v-1a.75.75 0 0 1 .75-.75z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};

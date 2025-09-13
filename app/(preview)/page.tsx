@@ -17,14 +17,24 @@ export default function Home() {
 
   const suggestedActions = [
     {
-      title: "Where is",
-      label: "my watch?",
-      action: "where is my watch?",
+      title: "Find datasets",
+      label: "about climate change",
+      action: "I need to find open datasets related to climate change with CSV format and permissive licensing",
     },
     {
-      title: "What orders",
-      label: "have shipped?",
-      action: "what orders have shipped?",
+      title: "Search for",
+      label: "genomics data",
+      action: "Search for genomics datasets published in the last 2 years with open access licenses",
+    },
+    {
+      title: "Evaluate dataset",
+      label: "compatibility",
+      action: "Can you evaluate if dataset ds-001 meets my requirements for machine learning research?",
+    },
+    {
+      title: "Generate citation",
+      label: "for dataset",
+      action: "Generate an APA citation for the climate change dataset I found",
     },
   ];
 
@@ -37,20 +47,26 @@ export default function Home() {
         >
           {messages.length === 0 && (
             <motion.div className="h-[350px] px-4 w-full md:w-[500px] md:px-0 pt-20">
-              <div className="border rounded-lg p-6 flex flex-col gap-4 text-zinc-500 text-sm dark:text-zinc-400 dark:border-zinc-700">
-                <p className="flex flex-row justify-center gap-4 items-center text-zinc-900 dark:text-zinc-50">
-                  <VercelIcon size={16} />
-                  <span>+</span>
-                  <MasonryIcon />
+              <div className=" rounded-lg p-6 flex flex-col gap-4 text-zinc-500 text-sm dark:text-zinc-400 dark:border-zinc-700">
+                {/* Font-based headline replacing icons */}
+                <div className="flex flex-col justify-center items-center text-zinc-900 dark:text-zinc-50">
+                  <h1 className="text-3xl md:text-4xl font-normal leading-tight" style={{ fontFamily: '"Noto Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial' }}>
+                    Dataset Finder
+                  </h1>
+                  <h2 className="text-xl md:text-2xl mt-2" style={{ fontFamily: '"Alfa Slab One"' }}>
+                    Stop Searching. Start Finding.
+                  </h2>
+                </div>
+                <p>
+                  This Dataset Discovery & Evaluation Agent helps scientists 
+                  find, evaluate, and acquire research datasets efficiently. The 
+                  AI uses the maxSteps parameter to automatically chain multiple 
+                  tool calls for comprehensive dataset analysis.
                 </p>
                 <p>
-                  The maxSteps parameter of streamText function allows you to
-                  automatically handle multiple tool calls in sequence using the
-                  AI SDK in your application.
-                </p>
-                <p>
-                  {" "}
-                  Learn more about{" "}
+                  Ask me to search datasets, evaluate compatibility, generate 
+                  citations, or help with any aspect of dataset discovery for 
+                  your research needs. Learn more about{" "}
                   <Link
                     className="text-blue-500 dark:text-blue-400"
                     href="https://sdk.vercel.ai/docs/ai-sdk-core/tools-and-tool-calling#multi-step-calls"

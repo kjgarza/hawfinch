@@ -6,8 +6,9 @@ import { ReactNode } from "react";
 import { StreamableValue, useStreamableValue } from "ai/rsc";
 import { Markdown } from "./markdown";
 import { ToolInvocation } from "ai";
-import { Orders } from "./orders";
-import { Tracker } from "./tracker";
+import { DatasetList } from "./dataset-list";
+import { EvaluationCard } from "./evaluation-card";
+import { CitationDisplay, MetadataDisplay } from "./dataset-components";
 
 export const TextStreamMessage = ({
   content,
@@ -71,13 +72,35 @@ export const Message = ({
 
                 return (
                   <div key={toolCallId}>
-                    {toolName === "listOrders" ? (
-                      <Orders orders={result} />
-                    ) : toolName === "viewTrackingInformation" ? (
-                      <div key={toolCallId}>
-                        <Tracker trackingInformation={result} />
-                      </div>
+                    {toolName === "searchDatasets" ? (
+                      <DatasetList datasets={result} />
+                    ) : toolName === "evaluateDataset" ? (
+                      <EvaluationCard evaluation={result} />
+                    ) : toolName === "generateCitation" ? (
+                      <CitationDisplay citation={result} />
+                    ) : toolName === "fetchMetadata" ? (
+                      <MetadataDisplay metadata={result} />
+                    ) : toolName === "logDecision" ? (
+                      <motion.div
+                        className="border border-zinc-200 dark:border-zinc-700 rounded-lg p-3 bg-zinc-50 dark:bg-zinc-800"
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                      >
+                        <div className="text-sm text-zinc-700 dark:text-zinc-300">
+                          Decision logged: <strong>{result.action}</strong> - {result.reason}
+                        </div>
+                      </motion.div>
                     ) : null}
+                  </div>
+                );
+              } else {
+                return (
+                  <div key={toolCallId} className="text-zinc-500 text-sm">
+                    {toolName === "searchDatasets" && "Searching datasets..."}
+                    {toolName === "evaluateDataset" && "Evaluating dataset..."}
+                    {toolName === "generateCitation" && "Generating citation..."}
+                    {toolName === "fetchMetadata" && "Fetching metadata..."}
+                    {toolName === "logDecision" && "Logging decision..."}
                   </div>
                 );
               }
