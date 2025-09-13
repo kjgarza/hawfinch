@@ -5,6 +5,7 @@ import {
   generateMockCitation, 
   logMockDecision 
 } from "@/components/data";
+import { getDoiDetail } from "@/src/infrastructure/datacite-client";
 import { openai } from "@ai-sdk/openai";
 import { streamText } from "ai";
 import { z } from "zod";
@@ -21,11 +22,28 @@ export async function POST(request: Request) {
       - your responses are concise and natural
       - you do not ever use lists, tables, or bullet points; instead, you provide flowing, conversational responses
       - when helping with dataset discovery, consider metadata completeness, licensing, format compatibility, and timeliness
+      - for evaluations you would always need metadata first.
       - always provide actionable recommendations based on the user's specific research needs
     `,
     messages,
     maxSteps: 5,
     tools: {
+      fetchDoi: {
+        description: "Fetch DataCite DOI details and map to the local Dataset shape",
+        parameters: z.object({
+          doi: z.string().describe("DOI string or DataCite id to fetch, e.g. 10.1234/zenodo.12345"),
+        }),
+        execute: async function ({ doi }) {
+          // small delay for UX parity with other tools
+          await new Promise((resolve) => setTimeout(resolve, 600));
+          try {
+            const result = await getDoiDetail(doi);
+            return result;
+          } catch (err: any) {
+            return { error: String(err?.message || err) };
+          }
+        },
+      },
       searchDatasets: {
         description:
           "Search for open datasets based on keywords, license constraints, and date filters to find relevant research data",
