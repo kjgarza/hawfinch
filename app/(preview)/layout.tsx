@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ai-sdk-preview-roundtrips.vercel.app"),
+  metadataBase: new URL("https://hawfinch.vercel.app"),
   title: "Automatic Multiple Tool Steps Preview",
   description: "Automatically handle multiple tool steps using the AI SDK",
 };
