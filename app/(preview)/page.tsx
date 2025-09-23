@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { Message } from "@/components/message";
 import { useScrollToBottom } from "@/components/use-scroll-to-bottom";
+import { Footer } from "@/components/footer";
 import { motion } from "framer-motion";
 import { MasonryIcon, VercelIcon } from "@/components/icons";
 import Link from "next/link";
@@ -39,7 +40,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="flex flex-row justify-center pb-20 h-dvh bg-white dark:bg-zinc-900">
+    <div className="flex flex-row justify-center pb-5 h-dvh bg-white dark:bg-zinc-900">
       <div className="flex flex-col justify-between gap-4">
         <div
           ref={messagesContainerRef}
@@ -133,6 +134,9 @@ export default function Home() {
             }}
           />
         </form>
+          <div className="flex flex-col gap-2 relative items-center">
+            <Footer  />
+          </div>
       </div>
     </div>
   );
