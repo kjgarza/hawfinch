@@ -79,7 +79,7 @@ export const Message = ({
                     ) : toolName === "generateCitation" ? (
                       <CitationDisplay citation={result} />
                     ) : toolName === "fetchMetadata" ? (
-                      <MetadataDisplay metadata={result} />
+                      <MetadataDisplay metadata={result.metadata} />
                     ) : toolName === "logDecision" ? (
                       <motion.div
                         className="border border-zinc-200 dark:border-zinc-700 rounded-lg p-3 bg-zinc-50 dark:bg-zinc-800"
