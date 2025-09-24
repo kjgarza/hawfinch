@@ -24,13 +24,13 @@ export interface Dataset {
 }
 
 export interface DatasetMetadata {
-  authors: string[];
+  authors?: string[];
   publicationDate: string;
-  license: string;
-  format: string[];
-  size: string;
+  license?: string;
+  format?: string[];
+  size?: string;
   doi?: string;
-  keywords: string[];
+  keywords?: string[];
   version?: string;
 }
 
@@ -159,12 +159,12 @@ export const getMockDatasets = (keywords: string[], licenseFilter?: string, date
     const keywordMatch = keywords.some(keyword => 
       dataset.title.toLowerCase().includes(keyword.toLowerCase()) ||
       dataset.description.toLowerCase().includes(keyword.toLowerCase()) ||
-      dataset.metadata.keywords.some(k => k.toLowerCase().includes(keyword.toLowerCase()))
+      dataset.metadata.keywords?.some(k => k.toLowerCase().includes(keyword.toLowerCase()))
     );
     
     // Filter by license if specified
     const licenseMatch = !licenseFilter || 
-      dataset.metadata.license.toLowerCase().includes(licenseFilter.toLowerCase());
+      dataset.metadata.license?.toLowerCase().includes(licenseFilter.toLowerCase());
     
     // Filter by date range if specified
     const dateMatch = !dateRange || 
@@ -185,18 +185,20 @@ export const evaluateMockDataset = (datasetId: string, requirements: any): Evalu
     throw new Error(`Dataset ${datasetId} not found`);
   }
 
-  const metadataComplete = dataset.metadata.authors.length > 0 && 
-                          dataset.metadata.license !== '' && 
-                          dataset.metadata.format.length > 0;
+  // Check metadata completeness - since rightsList, keywords, formats are optional
+  const metadataComplete = !!(dataset.metadata.authors && dataset.metadata.authors.length > 0 && 
+                          dataset.metadata.publicationDate !== '');
   
   const licenseCompatible = !requirements.licenseConstraints || 
+                           !dataset.metadata.license ||
                            requirements.licenseConstraints.some((license: string) =>
-                             dataset.metadata.license.toLowerCase().includes(license.toLowerCase())
+                             dataset.metadata.license?.toLowerCase().includes(license.toLowerCase())
                            );
   
   const formatCompatible = !requirements.formatConstraints ||
+                          !dataset.metadata.format ||
                           requirements.formatConstraints.some((format: string) =>
-                            dataset.metadata.format.includes(format)
+                            dataset.metadata.format && dataset.metadata.format.includes(format)
                           );
   
   const timeliness = !requirements.dateRange ||
@@ -228,7 +230,9 @@ export const generateMockCitation = (datasetId: string, format: 'APA' | 'CSL'): 
     throw new Error(`Dataset ${datasetId} not found`);
   }
 
-  const authors = dataset.metadata.authors.join(', ');
+  const authors = dataset.metadata.authors && dataset.metadata.authors.length > 0
+    ? dataset.metadata.authors.join(', ')
+    : 'Unknown Author';
   const year = new Date(dataset.metadata.publicationDate).getFullYear();
   
   const apaText = `${authors} (${year}). ${dataset.title}. ${dataset.repository}. ${dataset.metadata.doi ? `https://doi.org/${dataset.metadata.doi}` : dataset.url}`;

@@ -61,7 +61,7 @@ export const MetadataDisplay = ({ metadata }: { metadata: DatasetMetadata }) => 
         <div>
           <div className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">AUTHORS</div>
           <div className="text-sm text-zinc-700 dark:text-zinc-300">
-            {metadata.authors.join(', ')}
+            {metadata.authors && metadata.authors.length > 0 ? metadata.authors.join(', ') : null}
           </div>
         </div>
 
@@ -94,7 +94,7 @@ export const MetadataDisplay = ({ metadata }: { metadata: DatasetMetadata }) => 
               FORMATS
             </div>
             <div className="flex flex-wrap gap-1">
-              {metadata.format.map((format, index) => (
+              {metadata.format && metadata.format.length > 0 && metadata.format.map((format, index) => (
                 <span
                   key={index}
                   className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300"

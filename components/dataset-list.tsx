@@ -52,13 +52,15 @@ export const DatasetList = ({ datasets }: { datasets: Dataset[] }) => {
               </div>
               
               <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3 leading-relaxed">
-                {dataset.description}
+                {dataset.description.length > 300
+                  ? `${dataset.description.slice(0, 300)}…`
+                  : dataset.description}
               </p>
               
               <div className="flex items-center gap-4 text-xs text-zinc-500 dark:text-zinc-400">
                 <div className="flex items-center gap-1">
                   <DatabaseIcon size={12} />
-                  <span>{dataset.metadata.format.join(', ')}</span>
+                  <span>{dataset.metadata.format ? dataset.metadata.format.join(', ') : "Unknown format"}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <CalendarIcon size={12} />

@@ -1,11 +1,10 @@
 import { 
-  getMockDatasets, 
-  getMockMetadata, 
+  Dataset,
   evaluateMockDataset, 
   generateMockCitation, 
   logMockDecision 
 } from "@/components/data";
-import { getDoiDetail } from "@/src/infrastructure/datacite-client";
+import { getDoiDetail, searchDois } from "@/src/infrastructure/datacite-client";
 import { openai } from "@ai-sdk/openai";
 import { streamText } from "ai";
 import { z } from "zod";
@@ -79,20 +78,58 @@ export async function POST(request: Request) {
         }),
         execute: async function ({ keywords, licenseFilter, dateRange }) {
           await new Promise((resolve) => setTimeout(resolve, 1000));
-          const datasets = getMockDatasets(keywords, licenseFilter, dateRange);
-          return datasets;
+          
+          try {
+            // Construct search query from keywords
+            const query = keywords.join(' ');
+            
+            // Prepare search options
+            const options: { page?: number; size?: number; license?: string; resourceType?: string } = {
+              page: 1,
+              size: 10,
+            };
+            
+            // Add license filter if provided
+            if (licenseFilter) {
+              options.license = licenseFilter;
+            }
+            
+            // Search using DataCite API
+            const datasets = await searchDois(query, options);
+            
+            // Apply date range filtering if specified (post-processing since DataCite API doesn't directly support date ranges)
+            if (dateRange && (dateRange.startDate || dateRange.endDate)) {
+              return datasets.filter((dataset: Dataset) => {
+                const pubDate = new Date(dataset.metadata.publicationDate);
+                const startDate = dateRange.startDate ? new Date(dateRange.startDate) : new Date('1900-01-01');
+                const endDate = dateRange.endDate ? new Date(dateRange.endDate) : new Date();
+                
+                return pubDate >= startDate && pubDate <= endDate;
+              });
+            }
+            
+            return datasets;
+          } catch (error) {
+            console.error('Dataset search failed:', error);
+            // Return empty array on error to prevent tool failure
+            return [];
+          }
         },
       },
       fetchMetadata: {
         description:
           "Fetch detailed metadata for a specific dataset including authors, license, format, and technical details",
         parameters: z.object({
-          datasetId: z.string().describe("Dataset ID to fetch metadata for"),
+          datasetId: z.string().describe("Dataset ID (DOI) to fetch metadata for"),
         }),
         execute: async function ({ datasetId }) {
           await new Promise((resolve) => setTimeout(resolve, 800));
-          const metadata = getMockMetadata(datasetId);
-          return metadata;
+          try {
+            const result = await getDoiDetail(datasetId);
+            return result;
+          } catch (err: any) {
+            return { error: String(err?.message || err) };
+          }
         },
       },
       evaluateDataset: {
