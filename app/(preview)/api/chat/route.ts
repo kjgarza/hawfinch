@@ -1,6 +1,7 @@
 import { 
   Dataset,
   evaluateMockDataset, 
+  evaluateDatasetFromDoi,
   generateMockCitation, 
   logMockDecision 
 } from "@/components/data";
@@ -136,7 +137,7 @@ export async function POST(request: Request) {
         description:
           "Evaluate dataset compatibility against user requirements including format, license, and date constraints",
         parameters: z.object({
-          datasetId: z.string().describe("Dataset ID to evaluate"),
+          datasetId: z.string().describe("Dataset DOI to evaluate"),
           userRequirements: z
             .object({
               formatConstraints: z
@@ -159,8 +160,21 @@ export async function POST(request: Request) {
         }),
         execute: async function ({ datasetId, userRequirements }) {
           await new Promise((resolve) => setTimeout(resolve, 1200));
-          const evaluation = evaluateMockDataset(datasetId, userRequirements);
-          return evaluation;
+          
+          try {
+            // Fetch real dataset metadata from DOI
+            const dataset = await getDoiDetail(datasetId);
+            if (!dataset) {
+              throw new Error(`Dataset with DOI ${datasetId} not found`);
+            }
+            
+            // Evaluate using real metadata
+            const evaluation = evaluateDatasetFromDoi(dataset, userRequirements);
+            return evaluation;
+          } catch (error) {
+            console.error('Dataset evaluation failed:', error);
+            throw new Error(`Failed to evaluate dataset ${datasetId}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          }
         },
       },
       generateCitation: {

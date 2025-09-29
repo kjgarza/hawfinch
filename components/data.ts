@@ -224,6 +224,68 @@ export const evaluateMockDataset = (datasetId: string, requirements: any): Evalu
   };
 };
 
+export const evaluateDatasetFromDoi = (dataset: Dataset, requirements: any): EvaluationResult => {
+  if (!dataset) {
+    throw new Error('Dataset not found');
+  }
+
+  // Check metadata completeness - authors and publication date are key indicators
+  const metadataComplete = !!(dataset.metadata.authors && dataset.metadata.authors.length > 0 && 
+                          dataset.metadata.publicationDate !== '');
+  
+  // Check license compatibility
+  const licenseCompatible = !requirements.licenseConstraints || 
+                           !dataset.metadata.license ||
+                           requirements.licenseConstraints.some((license: string) =>
+                             dataset.metadata.license?.toLowerCase().includes(license.toLowerCase())
+                           );
+  
+  // Check format compatibility
+  const formatCompatible = !requirements.formatConstraints ||
+                          !dataset.metadata.format ||
+                          requirements.formatConstraints.some((format: string) =>
+                            dataset.metadata.format && dataset.metadata.format.includes(format)
+                          );
+  
+  // Check timeliness - dataset publication date should be within required range
+  let timeliness = true;
+  if (requirements.dateRange) {
+    const pubDate = new Date(dataset.metadata.publicationDate);
+    const startDate = requirements.dateRange.startDate ? new Date(requirements.dateRange.startDate) : new Date('1900-01-01');
+    const endDate = requirements.dateRange.endDate ? new Date(requirements.dateRange.endDate) : new Date();
+    timeliness = pubDate >= startDate && pubDate <= endDate;
+  }
+
+  // Calculate overall score based on all criteria
+  const criteria = [metadataComplete, licenseCompatible, formatCompatible, timeliness];
+  const overallScore = criteria.filter(Boolean).length / criteria.length;
+
+  // Generate detailed evaluation notes
+  const issues = [];
+  if (!metadataComplete) issues.push("incomplete metadata");
+  if (!licenseCompatible) issues.push("license incompatible");
+  if (!formatCompatible) issues.push("format incompatible");
+  if (!timeliness) issues.push("outside date range");
+
+  const notes = `Dataset evaluation completed. Score: ${Math.round(overallScore * 100)}%. ${
+    overallScore >= 0.8 ? "Highly recommended for your research." :
+    overallScore >= 0.6 ? `Good match with some limitations${issues.length > 0 ? ` (${issues.join(', ')})` : ''}.` :
+    `May not fully meet your requirements${issues.length > 0 ? ` due to: ${issues.join(', ')}` : ''}.`
+  }`;
+
+  return {
+    id: `eval-${dataset.id}`,
+    datasetId: dataset.id,
+    metadataComplete,
+    licenseCompatible,
+    formatCompatible,
+    timeliness,
+    overallScore,
+    notes,
+    evaluatedAt: new Date().toISOString()
+  };
+};
+
 export const generateMockCitation = (datasetId: string, format: 'APA' | 'CSL'): Citation => {
   const dataset = MOCK_DATASETS.find(ds => ds.id === datasetId);
   if (!dataset) {
