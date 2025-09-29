@@ -1,6 +1,8 @@
 import "./globals.css";
 import { Metadata } from "next";
 import { Toaster } from "sonner";
+import { AuthProvider } from "@/components/auth/auth-provider";
+import { AuthModal } from "@/components/auth/auth-modal";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hawfinch.vercel.app"),
@@ -16,8 +18,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Toaster position="top-center" richColors />
-        {children}
+        <AuthProvider>
+          <Toaster position="top-center" richColors />
+          <AuthModal />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

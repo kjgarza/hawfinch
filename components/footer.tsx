@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useAuth } from "./auth/auth-provider";
 
 const author = {
   name: "Kristian Garza",
@@ -12,6 +13,7 @@ const author = {
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const { logout } = useAuth();
 
   return (
     <motion.footer 
@@ -63,6 +65,15 @@ export function Footer() {
           >
             Email
           </a>
+        </div>
+        <div className="flex items-center gap-4">
+          <span className="text-zinc-400 dark:text-zinc-500">·</span>
+          <button 
+            onClick={logout}
+            className="hover:text-red-500 dark:hover:text-red-400 hover:underline transition-colors text-sm"
+          >
+            Logout
+          </button>
         </div>
       </div>
       <p className="text-zinc-500 dark:text-zinc-400 text-sm">

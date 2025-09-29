@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { MasonryIcon, VercelIcon } from "@/components/icons";
 import Link from "next/link";
 import { useChat } from "ai/react";
+import { ProtectedRoute } from "@/components/auth/protected-route";
 
 export default function Home() {
   const { messages, handleSubmit, input, setInput, append } = useChat();
@@ -40,12 +41,13 @@ export default function Home() {
   ];
 
   return (
-    <div className="flex flex-row justify-center pb-5 h-dvh bg-white dark:bg-zinc-900">
-      <div className="flex flex-col justify-between gap-4">
-        <div
-          ref={messagesContainerRef}
-          className="flex flex-col gap-6 h-full w-dvw items-center overflow-y-scroll"
-        >
+    <ProtectedRoute>
+      <div className="flex flex-row justify-center pb-5 h-dvh bg-white dark:bg-zinc-900">
+        <div className="flex flex-col justify-between gap-4">
+          <div
+            ref={messagesContainerRef}
+            className="flex flex-col gap-6 h-full w-dvw items-center overflow-y-scroll"
+          >
           {messages.length === 0 && (
             <motion.div className="h-[350px] px-4 w-full md:w-[500px] md:px-0 pt-20">
               <div className=" rounded-lg p-6 flex flex-col gap-4 text-zinc-500 text-sm dark:text-zinc-400 dark:border-zinc-700">
@@ -139,5 +141,6 @@ export default function Home() {
           </div>
       </div>
     </div>
+    </ProtectedRoute>
   );
 }
