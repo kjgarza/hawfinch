@@ -7,6 +7,7 @@ import { StreamableValue, useStreamableValue } from "ai/rsc";
 import { Markdown } from "./markdown";
 import { ToolInvocation } from "ai";
 import { DatasetList } from "./dataset-list";
+import { DatasetGrid } from "./dataset-grid";
 import { EvaluationCard } from "./evaluation-card";
 import { CitationDisplay, MetadataDisplay } from "./dataset-components";
 
@@ -56,11 +57,7 @@ export const Message = ({
       </div>
 
       <div className="flex flex-col gap-6 w-full">
-        {content && (
-          <div className="text-zinc-800 dark:text-zinc-300 flex flex-col gap-4">
-            <Markdown>{content as string}</Markdown>
-          </div>
-        )}
+
 
         {toolInvocations && (
           <div className="flex flex-col gap-4">
@@ -73,13 +70,13 @@ export const Message = ({
                 return (
                   <div key={toolCallId}>
                     {toolName === "searchDatasets" ? (
-                      <DatasetList datasets={result} />
+                      <DatasetGrid datasets={result} />
                     ) : toolName === "evaluateDataset" ? (
                       <EvaluationCard evaluation={result} />
                     ) : toolName === "generateCitation" ? (
                       <CitationDisplay citation={result} />
                     ) : toolName === "fetchMetadata" ? (
-                      <MetadataDisplay metadata={result} />
+                      <MetadataDisplay metadata={result.metadata} />
                     ) : toolName === "logDecision" ? (
                       <motion.div
                         className="border border-zinc-200 dark:border-zinc-700 rounded-lg p-3 bg-zinc-50 dark:bg-zinc-800"
@@ -105,6 +102,12 @@ export const Message = ({
                 );
               }
             })}
+          </div>
+        )}
+        
+        {content && (
+          <div className="text-zinc-800 dark:text-zinc-300 flex flex-col gap-4">
+            <Markdown>{content as string}</Markdown>
           </div>
         )}
       </div>
