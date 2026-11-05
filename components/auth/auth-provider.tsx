@@ -4,43 +4,60 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (password: string) => boolean;
-  logout: () => void;
+  login: (password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
   isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Configure your password here
-const VALID_PASSWORD = process.env.NEXT_PUBLIC_VALID_PASSWORD || 'demo123';
-const AUTH_TOKEN = 'hawfinch-auth-token';
-
+// The session lives in an httpOnly cookie set by /api/auth/login. The client
+// only learns whether it is signed in; it never sees the password or token.
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is already authenticated on mount
-    const token = localStorage.getItem(AUTH_TOKEN);
-    if (token) {
-      // Optional: Add token expiry check here
-      setIsAuthenticated(true);
-    }
-    setIsLoading(false);
+    let cancelled = false;
+    fetch('/api/auth/session', { cache: 'no-store' })
+      .then((res) => (res.ok ? res.json() : { authenticated: false }))
+      .then((data) => {
+        if (!cancelled) setIsAuthenticated(Boolean(data.authenticated));
+      })
+      .catch(() => {
+        if (!cancelled) setIsAuthenticated(false);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const login = (password: string): boolean => {
-    if (password === VALID_PASSWORD) {
-      localStorage.setItem(AUTH_TOKEN, 'authenticated');
-      setIsAuthenticated(true);
-      return true;
+  const login = async (password: string): Promise<boolean> => {
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+      if (res.ok) {
+        setIsAuthenticated(true);
+        return true;
+      }
+    } catch {
+      // fall through
     }
     return false;
   };
 
-  const logout = () => {
-    localStorage.removeItem(AUTH_TOKEN);
-    setIsAuthenticated(false);
+  const logout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } finally {
+      setIsAuthenticated(false);
+    }
   };
 
   return (

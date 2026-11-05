@@ -23,15 +23,12 @@ export function AuthModal() {
     setIsLoading(true);
     setError('');
 
-    // Small delay for better UX
-    setTimeout(() => {
-      const success = login(password);
-      if (!success) {
-        setError('Incorrect password. Please try again.');
-        setPassword('');
-      }
-      setIsLoading(false);
-    }, 300);
+    const success = await login(password);
+    if (!success) {
+      setError('Incorrect password. Please try again.');
+      setPassword('');
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -108,11 +105,6 @@ export function AuthModal() {
               </motion.button>
             </form>
 
-            <div className="mt-6 text-center">
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                Hint: Try &ldquo;demo123&rdquo; if you don&apos;t have the password
-              </p>
-            </div>
           </motion.div>
         </motion.div>
       )}
