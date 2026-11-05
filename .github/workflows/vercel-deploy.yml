@@ -23,10 +23,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Test
+        run: npm test
+
       - name: Build
         run: npm run build
 
+      # Production deploys only from pushes to main/master. Deploying from
+      # pull_request events with --prod would ship unmerged code to production.
       - name: Deploy to Vercel
+        if: github.event_name == 'push'
         uses: amondnet/vercel-action@v20
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
@@ -38,5 +44,5 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
       - name: Post-deploy status
-        if: success()
+        if: success() && github.event_name == 'push'
         run: echo "Deployment complete"
