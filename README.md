@@ -29,10 +29,24 @@ This project is an MVP AI agent that helps scientists and data engineers discove
 	```sh
 	pnpm install
 	```
-3. Create a `.env` file with your OpenAI API key:
+3. Copy `.env.example` to `.env.local` and fill it in:
 	```sh
-	echo "OPENAI_API_KEY=your_key_here" > .env
+	cp .env.example .env.local
 	```
+	- `OPENAI_API_KEY`: your OpenAI key (server-side only).
+	- `HAWFINCH_PASSWORD`: the shared password for the app. Server-only: never use a `NEXT_PUBLIC_` prefix. If it is unset, login and `/api/chat` stay closed.
+
+## Access control
+
+`/api/chat` requires a signed, httpOnly session cookie. The password gate posts to `/api/auth/login`, which checks `HAWFINCH_PASSWORD` on the server and sets the cookie (7 days). `/api/chat` returns 401 without a valid cookie before reading the request body or calling OpenAI. Requests are capped at 40 messages, 4000 characters per message, 256 KB body, 3 tool steps and 1024 output tokens. Changing `HAWFINCH_PASSWORD` invalidates all existing sessions.
+
+Also set a monthly spend limit on the OpenAI key.
+
+## Tests
+
+```sh
+pnpm test
+```
 
 ## Development
 
