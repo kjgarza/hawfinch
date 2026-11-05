@@ -9,9 +9,40 @@ import { getDoiDetail, searchDois } from "@/src/infrastructure/datacite-client";
 import { openai } from "@ai-sdk/openai";
 import { streamText } from "ai";
 import { z } from "zod";
+import { isAuthenticated } from "@/src/server/auth";
+import {
+  chatBodySchema,
+  MAX_BODY_BYTES,
+  MAX_OUTPUT_TOKENS,
+  MAX_STEPS,
+} from "@/src/server/chat-limits";
 
 export async function POST(request: Request) {
-  const { messages } = await request.json();
+  // Auth first: no body read, no OpenAI call without a valid session cookie.
+  if (!isAuthenticated(request)) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const declared = Number(request.headers.get("content-length") ?? "0");
+  if (declared > MAX_BODY_BYTES) {
+    return Response.json({ error: "Payload too large" }, { status: 413 });
+  }
+  const raw = await request.text();
+  if (raw.length > MAX_BODY_BYTES) {
+    return Response.json({ error: "Payload too large" }, { status: 413 });
+  }
+
+  let parsedBody: unknown;
+  try {
+    parsedBody = JSON.parse(raw);
+  } catch {
+    return Response.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+  const parsed = chatBodySchema.safeParse(parsedBody);
+  if (!parsed.success) {
+    return Response.json({ error: "Invalid request" }, { status: 400 });
+  }
+  const messages = (parsedBody as { messages: any[] }).messages;
 
   const stream = streamText({
     model: openai("gpt-4o-mini"),
@@ -26,7 +57,8 @@ export async function POST(request: Request) {
       - always provide actionable recommendations based on the user's specific research needs
     `,
     messages,
-    maxSteps: 5,
+    maxSteps: MAX_STEPS,
+    maxTokens: MAX_OUTPUT_TOKENS,
     tools: {
       fetchDoi: {
         description: "Fetch DataCite DOI details and map to the local Dataset shape",
