@@ -38,9 +38,9 @@ This project is an MVP AI agent that helps scientists and data engineers discove
 
 ## Access control
 
-`/api/chat` requires a signed, httpOnly session cookie. The password gate posts to `/api/auth/login`, which checks `HAWFINCH_PASSWORD` on the server and sets the cookie (7 days). `/api/chat` returns 401 without a valid cookie before reading the request body or calling OpenAI. Requests are capped at 40 messages, 4000 characters per message, 256 KB body, 3 tool steps and 1024 output tokens. Changing `HAWFINCH_PASSWORD` invalidates all existing sessions.
+`/api/chat` requires a signed, httpOnly session cookie. The password gate posts to `/api/auth/login`, which checks `HAWFINCH_PASSWORD` on the server and sets the cookie (7 days). `/api/chat` returns 401 without a valid cookie before reading the request body or calling OpenAI. Requests are capped at 40 messages, 4000 characters per message, 256 KB body (counted in bytes), 3 tool steps and 1024 output tokens. Changing `HAWFINCH_PASSWORD` invalidates all existing sessions.
 
-Also set a monthly spend limit on the OpenAI key.
+The login route has no rate limiting, so the password is the only protection for the OpenAI key: use a long random value (for example `openssl rand -base64 24`). Also set a monthly spend limit on the OpenAI key.
 
 ## Tests
 

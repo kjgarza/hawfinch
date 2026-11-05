@@ -23,9 +23,15 @@ export function AuthModal() {
     setIsLoading(true);
     setError('');
 
-    const success = await login(password);
-    if (!success) {
-      setError('Incorrect password. Please try again.');
+    const result = await login(password);
+    if (result !== 'ok') {
+      setError(
+        result === 'unconfigured'
+          ? 'Sign-in is not configured on the server. Contact the site owner.'
+          : result === 'error'
+            ? 'Could not reach the server. Please try again.'
+            : 'Incorrect password. Please try again.'
+      );
       setPassword('');
     }
     setIsLoading(false);

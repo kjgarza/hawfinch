@@ -4,10 +4,13 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (password: string) => Promise<boolean>;
+  login: (password: string) => Promise<LoginResult>;
+  expireSession: () => void;
   logout: () => Promise<void>;
   isLoading: boolean;
 }
+
+export type LoginResult = 'ok' | 'invalid' | 'unconfigured' | 'error';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -35,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const login = async (password: string): Promise<boolean> => {
+  const login = async (password: string): Promise<LoginResult> => {
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
@@ -44,13 +47,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       if (res.ok) {
         setIsAuthenticated(true);
-        return true;
+        return 'ok';
       }
+      return res.status === 503 ? 'unconfigured' : 'invalid';
     } catch {
-      // fall through
+      return 'error';
     }
-    return false;
   };
+
+  // Called when the server rejects a request with 401 (cookie expired or password rotated).
+  const expireSession = () => setIsAuthenticated(false);
 
   const logout = async () => {
     try {
@@ -61,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, isLoading }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, expireSession, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

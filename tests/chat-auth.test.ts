@@ -98,6 +98,18 @@ describe("/api/chat auth", () => {
     const long = JSON.stringify({ messages: [{ role: "user", content: "x".repeat(4001) }] });
     expect((await chat(chatRequest({ cookie, body: long }))).status).toBe(400);
     expect((await chat(chatRequest({ cookie, body: "not json" }))).status).toBe(400);
+    const sys = JSON.stringify({ messages: [{ role: "system", content: "x" }] });
+    expect((await chat(chatRequest({ cookie, body: sys }))).status).toBe(400);
+    expect(streamText).not.toHaveBeenCalled();
+  });
+});
+
+describe("/api/chat body size", () => {
+  it("counts bytes, not characters", async () => {
+    const cookie = `${COOKIE_NAME}=${createSessionToken()!}`;
+    // 100k three-byte characters is 300 KB, but only 100k UTF-16 code units.
+    const big = JSON.stringify({ messages: [{ role: "user", content: "€".repeat(100_000) }], pad: "" });
+    expect((await chat(chatRequest({ cookie, body: big }))).status).toBe(413);
     expect(streamText).not.toHaveBeenCalled();
   });
 });

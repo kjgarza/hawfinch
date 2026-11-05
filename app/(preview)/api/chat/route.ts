@@ -15,6 +15,7 @@ import {
   MAX_BODY_BYTES,
   MAX_OUTPUT_TOKENS,
   MAX_STEPS,
+  readBodyLimited,
 } from "@/src/server/chat-limits";
 
 export async function POST(request: Request) {
@@ -23,12 +24,8 @@ export async function POST(request: Request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const declared = Number(request.headers.get("content-length") ?? "0");
-  if (declared > MAX_BODY_BYTES) {
-    return Response.json({ error: "Payload too large" }, { status: 413 });
-  }
-  const raw = await request.text();
-  if (raw.length > MAX_BODY_BYTES) {
+  const raw = await readBodyLimited(request, MAX_BODY_BYTES);
+  if (raw === null) {
     return Response.json({ error: "Payload too large" }, { status: 413 });
   }
 

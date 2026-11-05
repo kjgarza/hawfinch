@@ -9,9 +9,16 @@ import { MasonryIcon, VercelIcon } from "@/components/icons";
 import Link from "next/link";
 import { useChat } from "ai/react";
 import { ProtectedRoute } from "@/components/auth/protected-route";
+import { useAuth } from "@/components/auth/auth-provider";
 
 export default function Home() {
-  const { messages, handleSubmit, input, setInput, append } = useChat();
+  const { expireSession } = useAuth();
+  const { messages, handleSubmit, input, setInput, append } = useChat({
+    onResponse: (response) => {
+      // Session cookie expired or password rotated: show the sign-in gate again.
+      if (response.status === 401) expireSession();
+    },
+  });
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [messagesContainerRef, messagesEndRef] =

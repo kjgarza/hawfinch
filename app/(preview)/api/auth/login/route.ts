@@ -1,3 +1,4 @@
+import { readBodyLimited } from "@/src/server/chat-limits";
 import { createSessionToken, getPassword, passwordMatches, sessionCookie } from "@/src/server/auth";
 
 export const dynamic = "force-dynamic";
@@ -7,8 +8,8 @@ export async function POST(request: Request) {
     return Response.json({ error: "Not configured" }, { status: 503 });
   }
 
-  const raw = await request.text();
-  if (raw.length > 1024) {
+  const raw = await readBodyLimited(request, 1024);
+  if (raw === null) {
     return Response.json({ error: "Bad request" }, { status: 400 });
   }
 
